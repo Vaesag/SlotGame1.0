@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Исходные файлы\include">
+      <UniqueIdentifier>{4721ccc2-a050-4bfe-9196-0ef4311d422d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\include\states">
+      <UniqueIdentifier>{b38ab262-18be-4cbd-ac5a-292a0eb177c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\src">
+      <UniqueIdentifier>{1cb27718-e145-4923-815e-7a705ceb6f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\src\states">
+      <UniqueIdentifier>{6f05be6d-0683-426d-b4ad-59d14a1982d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\resources">
+      <UniqueIdentifier>{d1475ae6-13d5-4f07-a6ec-8942137f82ea}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\GameState.h">
+      <Filter>Исходные файлы\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SlotMachine.h">
+      <Filter>Исходные файлы\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\StateMachine.h">
+      <Filter>Исходные файлы\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\States\SpinningState.h">
+      <Filter>Исходные файлы\include\states</Filter>
+    </ClInclude>
+    <ClInclude Include="include\States\WaitingForPlayerState.h">
+      <Filter>Исходные файлы\include\states</Filter>
+    </ClInclude>
+    <ClInclude Include="include\States\ShowingWinState.h">
+      <Filter>Исходные файлы\include\states</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\GameState.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SlotMachine.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\StateMachine.cpp">
+      <Filter>Исходные файлы\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\States\ShowingWinState.cpp">
+      <Filter>Исходные файлы\src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\States\SpinningState.cpp">
+      <Filter>Исходные файлы\src\states</Filter>
+    </ClCompile>
+    <ClCompile Include="src\States\WaitingForPlayerState.cpp">
+      <Filter>Исходные файлы\src\states</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SlotGame1.0.rc">
+      <Filter>Файлы ресурсов</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\go.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="resources\grapes.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="resources\lemon.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="resources\pineapple.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="resources\stop.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="resources\strawberry.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
+</Project>
