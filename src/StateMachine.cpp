@@ -6,7 +6,6 @@ void StateMachine::AddState(const std::string& name, std::unique_ptr<IState> sta
 }
 
 void StateMachine::SetCurrentState(GameState& game, const std::string& name) {
-    // Перед сменой состояния вызываем Exit старого, затем Enter нового.
     if (m_currentState) {
         std::cout << "[StateMachine] Exiting state...\n";
         m_currentState->Exit(game);

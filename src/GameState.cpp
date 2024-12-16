@@ -4,16 +4,14 @@
 #include "States/ShowingWinState.h"
 #include <iostream>
 
-// Функция отрисовки крупного текста для счёта
 static void RenderBigText(int x, int y, const char* text) {
-    glColor3f(1.0f, 1.0f, 0.0f); // Жёлтый цвет для счёта
+    glColor3f(1.0f, 1.0f, 0.0f);
     glRasterPos2i(x, y);
     for (const char* p = text; *p; p++) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *p);
     }
 }
 
-// Отрисовка обычного текста
 static void RenderText(int x, int y, const char* text) {
     glColor3f(1.0f, 1.0f, 1.0f);
     glRasterPos2i(x, y);
@@ -23,14 +21,13 @@ static void RenderText(int x, int y, const char* text) {
 }
 
 GameState::GameState() {
-    // Регистрация состояний
     m_stateMachine.AddState("WaitingForPlayer", std::make_unique<WaitingForPlayerState>());
     m_stateMachine.AddState("Spinning", std::make_unique<SpinningState>());
     m_stateMachine.AddState("ShowingWin", std::make_unique<ShowingWinState>());
 
     m_stateMachine.SetCurrentState(*this, "WaitingForPlayer");
 
-    m_score = 0; // Изначально счёт = 0
+    m_score = 0;
 }
 
 void GameState::Update(float dt) {
@@ -41,9 +38,6 @@ void GameState::Update(float dt) {
 void GameState::Render() {
     m_slotMachine.Render();
 
-    // Отобразим счёт над барабанами
-    // Предположим, что барабаны центрированы, как в SlotMachine::Render
-    // Вычислим позицию барабанов так же, как там:
     int symbolSize = 100;
     int reelCount = 4;
     int visibleSymbols = 3;
@@ -52,7 +46,6 @@ void GameState::Render() {
     int startX = (m_slotMachine.GetWidth() - totalWidth) / 2;
     int startY = (m_slotMachine.GetHeight() - totalHeight) / 2;
 
-    // Разместим счёт на 50 пикселей выше барабанов
     int scoreY = startY - 50;
     std::string scoreStr = "Score: " + std::to_string(m_score);
     int textWidth = (int)scoreStr.size() * 9;
@@ -63,10 +56,6 @@ void GameState::Render() {
         int textY = startY + totalHeight + 50;
         int textWidth = (int)m_resultText.size() * 9;
         int x = (m_slotMachine.GetWidth() - textWidth) / 2;
-        // "Jackpot!" уже выводится красным и большим шрифтом в ShowingWinState
-        // Здесь мы доверяем State показывать результат (уже сделано в ShowingWinState)
-        // но так как мы делали это раньше в GameState, оставим как есть.
-        // Сейчас оставим как было:
         RenderBigText(x, textY, m_resultText.c_str());
     }
 }

@@ -22,7 +22,7 @@ public:
     std::string m_resultText;
     bool m_showResultText = false;
 
-    int m_score; // Новое поле для счёта игрока
+    int m_score;
 
 private:
     StateMachine m_stateMachine;

@@ -46,17 +46,16 @@ SlotMachine::~SlotMachine() {
 }
 
 void SlotMachine::GenerateSymbolStrip(std::vector<Symbol>& strip) {
-    // Генерируем 20 символов из 4 уникальных. Например, просто 5 раз повторим 4 символа.
-    // Уникальные символы:
+
     std::vector<Symbol> base = { Symbol::Strawberry, Symbol::Grapes, Symbol::Pineapple, Symbol::Lemon };
 
     strip.clear();
     strip.reserve(STRIP_LENGTH);
-    // 5 раз добавим base
+ 
     for (int i = 0; i < 5; ++i) {
         for (auto s : base) strip.push_back(s);
     }
-    // Перемешаем
+
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(strip.begin(), strip.end(), g);
@@ -72,8 +71,7 @@ void SlotMachine::InitializeReels() {
         m_reels[i].elapsedTime = 0.0f;
         m_reels[i].accelerating = true;
         m_reels[i].decelerating = false;
-        // Зададим maxSpeed и задержку
-        // Для разнообразия:
+
         if (i == 0) { m_reels[i].maxSpeed = 800.0f; m_reels[i].startDelay = 0.0f; }
         if (i == 1) { m_reels[i].maxSpeed = 850.0f; m_reels[i].startDelay = 0.2f; }
         if (i == 2) { m_reels[i].maxSpeed = 780.0f; m_reels[i].startDelay = 0.4f; }
@@ -134,12 +132,10 @@ bool SlotMachine::CheckJackpot() {
 }
 
 Symbol SlotMachine::GetSymbolAtCentralLine(int reelIndex) {
-    // Центральная линия - индекс видимого символа = 1
+
     Reel& r = m_reels[reelIndex];
     int totalSymbols = (int)r.symbols.size();
-    // Вычисляем текущий индекс символа
-    // rotation/SYMBOL_SIZE даёт количество символов пройдено.
-    // Возьмём floor, затем мод по totalSymbols
+
     int baseIndex = (int)std::floor(r.rotation / (float)SYMBOL_SIZE) % totalSymbols;
     if (baseIndex < 0) baseIndex += totalSymbols;
 
@@ -190,15 +186,6 @@ void SlotMachine::StartSpinning() {
     std::cout << "[SlotMachine] StartSpinning\n";
     m_shouldStop = false;
 
-    // При каждом старте:
-    // Задаём для каждого барабана новый targetRotation
-    // targetRotation - это rotation, на котором барабан остановится.
-    // Пусть барабан сделает от 2 до 6 оборотов (с учетом 20 символов, 1 символ ~100px)
-    // Каждый символ ~100px, 20 символов = 2000px один оборот
-    // Сделаем random от 2000*(2) до 2000*(6) = от 4000 до 12000px
-    // При остановке мы округлим rotation к ближайшему символу, но rotation будет большой,
-    // значит мы гарантированно придём к новому символу.
-
     std::random_device rd;
     std::mt19937 g(rd());
     std::uniform_int_distribution<int> dist(4000, 12000);
@@ -212,11 +199,8 @@ void SlotMachine::StartSpinning() {
         r.elapsedTime = 0.0f;
         r.speed = 0.0f;
         r.targetRotation = r.rotation + dist(g);
-        // maxSpeed уже определён в InitializeReels
     }
 
-    // Теперь барабаны начнут крутиться после задержки startDelay
-    // Фактически в UpdateAnimation проверим startDelay.
 }
 
 void SlotMachine::StopSpinning() {
@@ -252,7 +236,6 @@ void SlotMachine::Render() {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Отрисовка кнопок (без изменений)
     if (m_showStartButton) {
         DrawTexture(m_goButtonTexture.texId, 10, m_windowHeight - m_goButtonTexture.height - 10,
             m_goButtonTexture.width, m_goButtonTexture.height);
@@ -273,17 +256,14 @@ void SlotMachine::Render() {
         Reel& r = m_reels[reelIndex];
         int totalSymbols = (int)r.symbols.size();
 
-        // Вычисляем целочисленную и дробную часть rotation
         float rot = r.rotation / (float)symbolSize;
         int baseIndex = (int)std::floor(rot) % totalSymbols;
         if (baseIndex < 0) baseIndex += totalSymbols;
 
         float fraction = rot - std::floor(rot);
-        // Дробная часть fraction говорит, на сколько символ "сдвинут"
-        // Если fraction > 0, значит мы между символами
+
         float offsetY = -fraction * symbolSize;
 
-        // Отрисовываем 3 видимых символа со смещением offsetY
         for (int lineIndex = 0; lineIndex < VISIBLE_SYMBOLS; ++lineIndex) {
             int symbolIndex = (baseIndex + lineIndex) % totalSymbols;
             Symbol sym = r.symbols[symbolIndex];
@@ -295,12 +275,11 @@ void SlotMachine::Render() {
             DrawTexture(texInfo.texId, x, y, symbolSize, symbolSize);
         }
     }
-    // Рисуем полупрозрачный красный прямоугольник на центральной линии
-    // Центральная линия = lineIndex=1
-    int centralLineY = startY + symbolSize; // верхняя граница центральной линии
+
+    int centralLineY = startY + symbolSize;
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(1.0f, 0.0f, 0.0f, 0.3f); // красный с прозрачностью 0.3
+    glColor4f(1.0f, 0.0f, 0.0f, 0.3f); 
     glBegin(GL_QUADS);
     glVertex2i(startX, centralLineY);
     glVertex2i(startX + totalWidth, centralLineY);
@@ -311,21 +290,14 @@ void SlotMachine::Render() {
 }
 
 float SlotMachine::CalculateSpeed(Reel& r, float dt) {
-    // Квадратичный easing
-    // Если accelerating:
-    // t = elapsedTime/m_accelerationTime
-    // speed = maxSpeed * t^2
-    // Если decelerating:
-    // t = elapsedTime/m_decelerationTime
-    // speed = maxSpeed * (1 - t)^2
-    // При переходе от разгона к торможению maxSpeed сохраняем одинаково.
+
 
     if (!r.started) return 0.0f;
 
     if (r.accelerating && !r.decelerating) {
         float t = r.elapsedTime / m_accelerationTime;
         if (t >= 1.0f) {
-            // Достигли maxSpeed, переходим в состояние равномерного движения
+            
             r.accelerating = false;
             return r.maxSpeed;
         }
@@ -333,14 +305,12 @@ float SlotMachine::CalculateSpeed(Reel& r, float dt) {
     }
 
     if (!r.accelerating && !r.decelerating) {
-        // Равномерное движение, пока не скажут тормозить
         return r.maxSpeed;
     }
 
     if (r.decelerating) {
         float t = r.elapsedTime / m_decelerationTime;
         if (t >= 1.0f) {
-            // Остановились
             return 0.0f;
         }
         return r.maxSpeed * (1 - t) * (1 - t);
@@ -350,7 +320,6 @@ float SlotMachine::CalculateSpeed(Reel& r, float dt) {
 }
 
 void SlotMachine::AlignRotation(Reel& r) {
-    // Округляем rotation до ближайшего символа
     int symbolSize = SYMBOL_SIZE;
     float symbolsPassed = r.rotation / symbolSize;
     float nearest = std::round(symbolsPassed);
@@ -360,60 +329,43 @@ void SlotMachine::AlignRotation(Reel& r) {
 void SlotMachine::UpdateAnimation(float dt) {
     for (int i = 0; i < REEL_COUNT; ++i) {
         Reel& r = m_reels[i];
-        // Запуск после задержки
         if (!r.started) {
-            // Ждём startDelay
             r.startDelay -= dt;
             if (r.startDelay <= 0.0f) {
                 r.started = true;
-                r.spinning = true; // Начинаем крутить
+                r.spinning = true;
                 r.accelerating = true;
                 r.decelerating = false;
                 r.elapsedTime = 0.0f;
             }
             else {
-                continue; // Ещё не стартовали
+                continue;
             }
         }
 
         if (r.spinning) {
             r.elapsedTime += dt;
 
-            // Если мы должны остановиться:
-            // Проверим, достигли ли targetRotation
             if (m_shouldStop && !r.decelerating) {
-                // Начинаем торможение
                 r.decelerating = true;
                 r.accelerating = false;
-                r.elapsedTime = 0.0f; // сброс времени для торможения
-                // Когда торможение закончится, выровняем rotation
+                r.elapsedTime = 0.0f;
             }
 
             float oldSpeed = r.speed;
             r.speed = CalculateSpeed(r, dt);
 
-            // Изменяем rotation на основе новой скорости
-            // Простой подход: rotation += speed*dt
-            // Но мы уже делаем это в CalculateSpeed? Нет, мы там только считаем speed.
-            // speed уже учитывается.
             if (!r.decelerating && !r.accelerating) {
-                // Равномерно крутим, пока не скажут Stop
                 r.rotation += r.speed * dt;
             }
             else {
-                // Если ускоряемся или тормозим:
-                // Мы уже учитываем dt при расче speed?
-                // Speed - это мгновенное значение, нам нужно применить rotation += speed*dt
-                // уже сделано выше в линейных примерах, здесь тоже:
                 r.rotation += r.speed * dt;
             }
 
-            // Если тормозим и speed близок к 0:
             if (r.decelerating && r.speed <= 0.001f) {
-                // Останавливаем барабан
                 r.spinning = false;
                 r.speed = 0.0f;
-                AlignRotation(r); // выравниваем для подсчёта
+                AlignRotation(r);
             }
         }
     }

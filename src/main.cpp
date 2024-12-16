@@ -4,28 +4,24 @@
 #include <GL/freeglut.h>
 #include "GameState.h"
 
-// Глобальное состояние игры
 GameState* g_game = nullptr;
 
-// Колбэк на изменение размера окна
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    if (g_game) { // Проверяем, инициализирован ли указатель
+    if (g_game) { 
         g_game->OnResize(width, height);
     }
     else {
-        // Если g_game == nullptr, можем вывести предупреждение или ничего не делать
         std::cout << "[framebuffer_size_callback] g_game is null, cannot call OnResize\n";
     }
 }
 
-// Колбэк на нажатие кнопки мыши
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         double xpos, ypos;
         glfwGetCursorPos(window, &xpos, &ypos);
         std::cout << "[main] Mouse click at " << xpos << ", " << ypos << "\n";
 
-        if (g_game) { // Проверяем, инициализирован ли указатель
+        if (g_game) {
             g_game->OnMouseClick((int)xpos, (int)ypos);
         }
         else {
@@ -54,16 +50,14 @@ int main(int argc, char** argv) {
     glfwMakeContextCurrent(window);
     glewInit();
 
-    glEnable(GL_TEXTURE_2D);            // Включаем 2D текстуры глобально
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Выравнивание пикселей
-    glEnable(GL_BLEND);                 // Включаем смешивание для альфа-канала
+    glEnable(GL_TEXTURE_2D); 
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); 
+    glEnable(GL_BLEND);             
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glShadeModel(GL_SMOOTH);
 
-    // Теперь создаем GameState, после инициализации OpenGL
     g_game = new GameState();
 
-    // Устанавливаем колбэки
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
@@ -82,7 +76,7 @@ int main(int argc, char** argv) {
         glfwPollEvents();
     }
 
-    delete g_game; // Освобождаем память
+    delete g_game;
     glfwDestroyWindow(window);
     glfwTerminate();
     return 0;

@@ -19,7 +19,6 @@ void SpinningState::Update(GameState& game, float dt) {
         game.OnTimeOut();
     }
 
-    // ≈сли стоп был нажат и барабаны уже остановились
     if (m_stopPressed && !game.GetSlotMachine().IsSpinning()) {
         bool jackpot = game.GetSlotMachine().CheckJackpot();
         game.GetStateMachine().SetCurrentState(game, "ShowingWin");
